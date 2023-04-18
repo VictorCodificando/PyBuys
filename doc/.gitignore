@@ -1,0 +1,6 @@
+# Ignorar los archivos de respaldo y los archivos de caché
+[Tt]humbs.db
+*.bak
+*.cache
+*.dmpt
+*.bkp
