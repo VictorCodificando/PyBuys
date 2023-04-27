@@ -1,8 +1,14 @@
 {% extends 'core/base.html' %}
-{% block title %}
-{% endblock %}
-{% block container %}
-<div class="w-full h-100 my-6 p-6 mx-auto bg-gray-10 rounded-xl shadow-xl bg-white">
-MESSI
-</div>
+{% block content %}
+  <div class="w-full my-6 p-6 mx-auto bg-gray-10 rounded-xl shadow-xl bg-white">
+    <a href="#">
+      <div class="w-full flex flex-row justify-between">
+        {% for categoria in categorias %}
+          <div class="flex-1 border text-center">
+            <p>{{ categoria.nombre }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    </a>
+  </div>
 {% endblock %}
