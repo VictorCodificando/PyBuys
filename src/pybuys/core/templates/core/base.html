@@ -14,10 +14,10 @@
     {% endblock %}
   </head>
   <body>
-    <div class="min-h-screen flex flex-col items-center">
-      <nav class="flex items-center justify-between shadow-md p-4 w-full">
+    <div class="min-h-screen flex flex-col items-center bg-gray-100">
+      <nav class="flex items-center justify-between shadow-md p-4 w-full bg-white">
         <a href="#"><img src="/media/core/logo.png" alt="Logo izquierdo" class="w-12 h-12" /></a>
-        {% if not request.user.is_authenticated %}
+        {% if request.user.is_authenticated %}
           <div>
             <img src="/media/core/user_logo.png" alt="Logo derecho" class="w-12 h-12 mr-10" id="user-menu-btn" />
             <div id="user-menu" style="display: none;" class="z-5 absolute bg-white right-2">
@@ -34,7 +34,7 @@
                   <a href="#" class="block p-4 hover:bg-gray-100">Configuración de cuenta</a>
                 </li>
                 <li class="text-center">
-                  <a href="#" class="block p-4 hover:bg-gray-100">Cerrar sesión</a>
+                  <a href="{%url 'logout'%}" class="block p-4 hover:bg-gray-100">Cerrar sesión</a>
                 </li>
               </ul>
             </div>
