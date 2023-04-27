@@ -1,0 +1,40 @@
+{% extends 'core/base.html' %}
+{% block style %}
+  <style>
+    #image-container {
+      position: relative;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #image-container img {
+      position: absolute;
+      animation: slideDown 4s ease forwards;
+    }
+    @keyframes slideDown {
+      0% {
+        transform: translateY(-100%);
+      }
+      100% {
+        transform: translateY(0);
+      }
+    }
+  </style>
+{% endblock %}
+{% block container %}
+  <div id="image-container" class="z-1 relative">
+    <img src="{{ MEDIA_URL }}logo.png" alt="Imagen" class="h-4/5" />
+  </div>
+{% endblock %}
+{% block script %}
+  <script>
+    window.onload = function () {
+      const img = document.querySelector('#image-container img')
+      img.style.top = '-100%'
+      setTimeout(function () {
+        img.style.top = '0'
+      }, 1000)
+    }
+  </script>
+{% endblock %}
