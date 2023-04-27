@@ -1,40 +1,17 @@
 {% extends 'core/base.html' %}
 {% block style %}
-  <style>
-    #image-container {
-      position: relative;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    #image-container img {
-      position: absolute;
-      animation: slideDown 4s ease forwards;
-    }
-    @keyframes slideDown {
-      0% {
-        transform: translateY(-100%);
-      }
-      100% {
-        transform: translateY(0);
-      }
-    }
-  </style>
 {% endblock %}
-{% block container %}
-  <div id="image-container" class="z-1 relative">
-    <img src="{{ MEDIA_URL }}logo.png" alt="Imagen" class="h-4/5" />
+{% block content %}
+
+  <div id="image-container" class="flex min-w-screen justify-center">
+    <img src="/media/core/logo.png" alt="Imagen" class="w-[590px]"/>
   </div>
+  <div id="options" class="bg-white rounded-lg shadow-2xl py-6 px-8 mx-auto max-w-lg h-16 flex items-center justify-between mb-50 mt-20">
+    <a href="{% url 'login' %}" class="bg-blue-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded mr-20">Iniciar Sesión</a>
+    <p class="mr-20">O</p>
+    <a href="{% url 'signup' %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Crear Cuenta</a>
+  </div>
+
 {% endblock %}
 {% block script %}
-  <script>
-    window.onload = function () {
-      const img = document.querySelector('#image-container img')
-      img.style.top = '-100%'
-      setTimeout(function () {
-        img.style.top = '0'
-      }, 1000)
-    }
-  </script>
 {% endblock %}

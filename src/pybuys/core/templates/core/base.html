@@ -2,7 +2,11 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Página de inicio</title>
+    <title>
+      {% block title %}
+
+      {% endblock %}PyBuys
+    </title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     {% block style %}
@@ -10,41 +14,41 @@
     {% endblock %}
   </head>
   <body>
-    <div class="bg-white w-full h-full flex flex-col justify-center top-0 absolute">
-      <nav class="flex items-center justify-between shadow-md p-4 z-3 relative w">
-        <img src="{{ MEDIA_URL }}logo.png" alt="Logo izquierdo" class="w-12 h-12" />
-        <!--Si esta autorizado el usuario lo muestra-->
-        <div>
-          <img src="{{ MEDIA_URL }}user_logo.png" alt="Logo derecho" class="w-12 h-12 mr-10" id="user-menu-btn" />
-          <div id="user-menu" style="display: none;" class="z-5 absolute bg-white right-2">
-            <ul class="table-auto border divide-y divide-gray-200">
-              <li class="text-center">
-                <a href="#" class="block p-4 hover:bg-gray-100">Mi perfil</a>
-              </li>
-              <li class="text-center">
-                <a href="#" class="block p-4 hover:bg-gray-100">Configuración</a>
-              </li>
-              <li class="text-center">
-                <a href="#" class="block p-4 hover:bg-gray-100">Cerrar sesión</a>
-              </li>
-            </ul>
+    <div class="min-h-screen flex flex-col items-center">
+      <nav class="flex items-center justify-between shadow-md p-4 w-full">
+        <a href="#"><img src="/media/core/logo.png" alt="Logo izquierdo" class="w-12 h-12" /></a>
+        {% if not request.user.is_authenticated %}
+          <div>
+            <img src="/media/core/user_logo.png" alt="Logo derecho" class="w-12 h-12 mr-10" id="user-menu-btn" />
+            <div id="user-menu" style="display: none;" class="z-5 absolute bg-white right-2">
+              <ul class="table-auto border divide-y divide-gray-200">
+                {% if request.user.is_superuser %}
+                  <li class="text-center">
+                    <a href="#" class="block p-4 hover:bg-gray-100">Compras</a>
+                  </li>
+                {% endif %}
+                <li class="text-center">
+                  <a href="#" class="block p-4 hover:bg-gray-100">Carrito</a>
+                </li>
+                <li class="text-center">
+                  <a href="#" class="block p-4 hover:bg-gray-100">Configuración de cuenta</a>
+                </li>
+                <li class="text-center">
+                  <a href="#" class="block p-4 hover:bg-gray-100">Cerrar sesión</a>
+                </li>
+              </ul>
+            </div>
           </div>
-          
-        </div>
+        {% endif %}
       </nav>
-      {% block container %}
+      <div class="container grow min-w-screen items-center">
+        {% block content %}
 
-      {% endblock %}
-      <div id="options" class="mt-8 bg-white rounded-lg shadow-2xl py-6 px-8 mx-auto max-w-lg h-16 flex items-center mb-10 justify-between z-2 relative">
-        <a href="#" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-20">Iniciar Sesión</a>
-        <p class="mr-20">O</p>
-        <a href="#" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Crear Cuenta</a>
+        {% endblock %}
       </div>
-      <footer class="py-6 px-6 flex justify-center items-center bg-gray-800 z-3 relative w-screen">
-        <div class="w-1/3 flex justify-between items-center flex-row">
-          <a class="text-lg text-white hover:text-gray-300 mr-4" href="https://github.com/VictorCodificando/PyBuys">Sobre el proyecto</a>
-          <a class="text-lg text-white hover:text-gray-300" href="https://github.com/VictorCodificando/PyBuys/blob/main/LICENSE">Licencia de uso</a>
-        </div>
+      <footer class="bg-gray-600 p-6 px-80 bottom-10 w-full flex flex-row justify-between items-center">
+        <a class="text-lg text-white hover:text-gray-300" href="https://github.com/VictorCodificando/PyBuys">Sobre el proyecto</a>
+        <a class="text-lg text-white hover:text-gray-300" href="https://github.com/VictorCodificando/PyBuys/blob/main/LICENSE">Licencia de uso</a>
       </footer>
     </div>
   </body>

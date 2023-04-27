@@ -2,38 +2,6 @@ from django.db import models
 
 """
 
-class Categorias(models.Model):
-    id = models.IntegerField(primary_key=True)
-    nombre = models.CharField(max_length=40)
-    grupo = models.ForeignKey("self", on_delete=models.CASCADE, null=True)
-
-
-class Productos(models.Model):
-    id = models.IntegerField(primary_key=True)
-    nombre = models.CharField(max_length=50)
-    precio = models.FloatField()
-    foto = models.CharField(max_length=50)
-    rebaja = models.FloatField()
-    cantidad = models.IntegerField()
-    categoria = models.ForeignKey(Categorias, on_delete=models.CASCADE)
-
-
-class Caracteristicas(models.Model):
-    id = models.AutoField(primary_key=True)
-    descripcion = models.CharField(max_length=50, unique=True)
-
-
-class CaracteristicaPorProducto(models.Model):
-    caracteristica_id = models.ForeignKey(Caracteristicas, on_delete=models.CASCADE)
-    producto_id = models.ForeignKey(Productos, on_delete=models.CASCADE)
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["caracteristica_id", "producto_id"], name="unique_caract_prod"
-            ),
-        ]
-
 
 class Cuentas(models.Model):
     id = models.AutoField(primary_key=True)
@@ -78,4 +46,27 @@ class Ventas(models.Model):
     id_usuario = models.ForeignKey(Cuentas, on_delete=models.CASCADE)
     id_producto = models.ForeignKey(Productos, on_delete=models.CASCADE)
     cantidad = models.IntegerField()
+
+
+accounts: para las páginas de inicio de sesión y creación de cuentas.
+core: para la página de inicio (index) y la página de búsqueda.
+products: para la página de detalle de producto.
+cart: para la gestión del carrito de compras.
+purchases: para la administración de las compras.
+user_settings: para la configuración de la cuenta de usuario.
+
+
+app "accounts" con los modelos:
+Cuentas
+Sesiones
+app "products" con los modelos:
+Categorias
+Productos
+Caracteristicas
+CaracteristicaPorProducto
+app "cart" con los modelos:
+ProductosEnCarrito
+app "orders" con los modelos:
+Compras
+Ventas
 """
