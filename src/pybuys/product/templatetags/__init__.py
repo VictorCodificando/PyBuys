@@ -1,2 +1,2 @@
 
-from .product_tags import *
+from .custom_tags import *

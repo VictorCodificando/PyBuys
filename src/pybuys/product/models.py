@@ -13,18 +13,6 @@ class Categorias(models.Model):
     def __str__(self):
         return self.nombre
 
-
-class Caracteristicas(models.Model):
-    class Meta:
-        verbose_name = "Caracteristica"
-        verbose_name_plural = "Caracteristicas"
-
-    descripcion = models.CharField(max_length=50, unique=True)
-
-    def __str__(self):
-        return self.descripcion
-
-
 class Productos(models.Model):
     class Meta:
         verbose_name = "Producto"
@@ -36,7 +24,8 @@ class Productos(models.Model):
     rebaja = models.FloatField()
     cantidad = models.IntegerField()
     categoria = models.ForeignKey(Categorias, on_delete=models.CASCADE)
-    caracteristicas = models.ManyToManyField(Caracteristicas)
+    descripcion = models.CharField(max_length=600)
+    creado = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.nombre

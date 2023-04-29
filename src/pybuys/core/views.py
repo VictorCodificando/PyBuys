@@ -31,9 +31,15 @@ def signup(request):
 
 @login_required
 def index(request):
-    categorias = Categorias.objects.filter(grupo__isnull=True)
-    productos = Productos.objects.order_by("nombre").all()[:10]
-    return render(request, "core/index.html", {"categorias": categorias, "productos": productos})
+    productos = Productos.objects.filter(cantidad__gt=0)[:10]
+    return render(
+        request,
+        "core/index.html",
+        {
+            "grupo": None,
+            "productos": productos,
+        },
+    )
 
 
 @login_required
