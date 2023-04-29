@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
-from product.models import Categorias
+from product.models import Categorias, Productos
 
 from pybuys.settings import MEDIA_URL
 
@@ -32,7 +32,8 @@ def signup(request):
 @login_required
 def index(request):
     categorias = Categorias.objects.filter(grupo__isnull=True)
-    return render(request, "core/index.html", {"categorias": categorias})
+    productos = Productos.objects.order_by("nombre").all()[:10]
+    return render(request, "core/index.html", {"categorias": categorias, "productos": productos})
 
 
 @login_required
