@@ -1,0 +1,12 @@
+{% load product_tags %}
+<div class="grid grid-cols-4 grid-flow-row mt-20 w-full">
+  {% for producto in productos %}
+    <a class="border text-center flex flex-col items-center" href="{% url 'detail' producto.pk %}">
+      <img src="{{ producto.image.url }}" class="grow object-contain h-48" />
+      <div class="flex flex-row justify-between w-full px-20 mt-4">
+        <strong><p>{{ producto.nombre }}</p></strong>
+        <strong><p class="text-orange-600">{{ producto.precio }} €</p></strong>
+      </div>
+    </a>
+  {% endfor %}
+</div>

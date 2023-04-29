@@ -1,19 +1,7 @@
-{% extends 'core/base.html' %}
-{% block content %}
-  <div class="w-full my-6 p-6 mx-auto bg-gray-10 rounded-xl shadow-xl bg-white">
-    <div class="w-full flex flex-row justify-between bg-gray-80 ">
-      {% for categoria in categorias %}
-        <a href="#" class="flex-1 border text-center"><p>{{ categoria.nombre }}</p></a>
-      {% endfor %}
-    </div>
-    <div class="w-full flex flex-row justify-between mt-20">
-      {% for producto in productos %}
-        <div class="flex-1 border text-center">
-          <img src=" {{producto.image.url}}" class="rounded-t-xl" />
-          <p>{{ producto.nombre }}</p>
-          <p>{{ producto.precio }} $</p>
-        </div>
-      {% endfor %}
-    </div>
-  </div>
-{% endblock %}
+{%extends 'core/basic_products_index.html'%}
+{%block title%}
+Inicio |
+{%endblock%}
+{%block product_title%}
+Últimos productos
+{%endblock%}
