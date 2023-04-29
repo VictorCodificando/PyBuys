@@ -1,0 +1,1 @@
+from .utils import pertenece_a_categoria
