@@ -6,11 +6,11 @@
       <form method="POST" action=".">
         {% csrf_token %}
         <div class="mb-3">
-          <label class="inline-block mb-2 mt-5">Username</label><br />
+          <label class="inline-block mb-2 mt-5">Usuario</label><br />
           {{ form.username }}
         </div>
         <div class="mb-3">
-          <label class="inline-block mb-2 mt-10">Password</label><br />
+          <label class="inline-block mb-2 mt-10">Contraseña</label><br />
           {{ form.password }}
         </div>
         {% if form.errors or form.non_field_errors %}
