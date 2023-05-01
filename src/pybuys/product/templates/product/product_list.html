@@ -5,7 +5,7 @@
       <img src="{{ producto.image.url }}" class="grow object-contain h-48" />
       <div class="flex flex-row justify-between w-full px-20 mt-4">
         <strong><p>{{ producto.nombre }}</p></strong>
-        <strong><p class="text-orange-600">{{ producto.precio}} €</p></strong>
+        <strong><p class="text-orange-600">{{ producto.get_precio_real}}</p></strong>
       </div>
     </a>
   {% endfor %}

@@ -1,0 +1,28 @@
+HAY QUE TENER PYTHON INSTALADO
+1- Abrir la cmd en src con permisos de adminstrador
+2- Poner el siguiente comando para ejecutar el entorno virtual:
+pybuys_env\Scripts\activate.bat
+
+3-Luego simplemente llamamos al .bat de ejecutar y ya el solo se encarga de ejecutar todo lo necesario
+EJECUTAR.bat
+
+DEBER APARECER ALGO ASI:
+------------------------------------------------------------
+No changes detected
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, product, sessions
+Running migrations:
+  No migrations to apply.
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+May 02, 2023 - 00:33:21
+Django version 4.2, using settings 'pybuys.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CTRL-BREAK.
+-------------------------------------------------------------
+
+4- Abrimos la dirección 127.0.0.1:8000 o localhost:8000
+5- Nos vamos a la dirección localhost:8000/admin y metemos el usuario de prueba "admin" y la contraseña de prueba "1234"
+6- Agregamos categorias, luego productos y la aplicacion estaría lista para su uso.

@@ -7,17 +7,31 @@
 
       {% endblock %} | PyBuys
     </title>
+    {% load static %}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="{% static 'scripts.js' %}"></script>
+    <link rel="shortcut icon" type="image/x-icon" href="/media/core/favicon.ico">
     {% block style %}
 
     {% endblock %}
   </head>
   <body>
+    
     <div class="min-h-screen flex flex-col items-center bg-gray-100">
       <nav class="flex items-center justify-between shadow-md p-4 w-full bg-white">
-        <a href="{%url 'index'%}"><img src="/media/core/logo.png" alt="Logo izquierdo" class="w-12 h-12" /></a>
+        <a href="{%if request.user.is_authenticated%}{%url 'index'%}{%else%}{%url 'home' %} {%endif%}"><img src="/media/core/favicon.ico" alt="Logo izquierdo" class="w-12 h-12" /></a>
         {% if request.user.is_authenticated %}
+        <div class="grow mx-20 ">
+        <div class="flex flex-col border border-black">
+        <form class="flex flex-row border border-black" method="GET" action="{%url 'productos'%}">
+          <input  autocomplete="off" id="barraBusqueda" name="query" class="w-full py-4 px-6 z-5" type="text" value="{{query}}" placeholder="Busca aquí productos, por su nombre, descripcion..." maxlength="200">
+          <button class="bg-gray-300 hover:bg-gray-400 text-white font-bold py-2 px-4">🔍︎</button>
+        </form>
+        <ul id="resultados" class="py-16 absolute"></ul>
+        </div>
+      </div>
+        
           <div>
             <img src="/media/core/user_logo.png" alt="Logo derecho" class="w-12 h-12 mr-10" id="user-menu-btn" />
             <div id="user-menu" style="display: none;" class="z-5 absolute bg-white right-2">
@@ -52,15 +66,48 @@
       </footer>
     </div>
   </body>
-  {% block script %}
 
-  {% endblock %}
-
+  {% if request.user.is_authenticated %}
   <script>
     $(document).ready(function () {
       $('#user-menu-btn').click(function () {
         $('#user-menu').toggle()
       })
     })
+    const barraBusqueda = document.getElementById('barraBusqueda')
+    const lista = document.getElementById('resultados')
+
+    barraBusqueda.addEventListener('input', () => {
+      var query =barraBusqueda.value.trim();
+      
+      if(query===""){
+        return lista.innerHTML = "";
+      }
+      var url = "/product/busqueda?query=" + query;
+      lista.innerHTML = "";
+      fetch(url)
+          .then(response => response.json())
+          .then(data => {
+            //Split data in commas and iterate
+            data.forEach(data => {
+              const nuevoElemento = document.createElement('li');
+              const enlace = document.createElement('a');
+              enlace.textContent = data;
+              enlace.href = "/product?query=" + data;
+              enlace.classList.add("block", "p-4", "hover:bg-gray-100", "bg-white", "border", "border-black", "w-[1113%]");
+              nuevoElemento.appendChild(enlace);
+              lista.appendChild(nuevoElemento);
+            });
+          })
+          .catch(error => {
+            console.log(error);
+          });
+
+      });
   </script>
+
+  {% endif %}
+  {% block script %}
+
+  {% endblock %}
 </html>

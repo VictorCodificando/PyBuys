@@ -11,3 +11,5 @@ def pertenece_a_categoria(categoria_hijo, categoria):
     else:
         # Si el producto tiene una categoría diferente, se revisa su grupo recursivamente
         return pertenece_a_categoria(categoria_hijo.grupo, categoria)
+
+    

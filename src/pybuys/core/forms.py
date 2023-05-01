@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 # Estilos para los campos de los formularios
 field_attrs = {
-    "class": "w-full py-4 px-6 rounded-xl mt-4",
+    "class": "w-full py-4 px-6 rounded-xl mt-4 bg-gray-200",
     "placeholder": "",
 }
 

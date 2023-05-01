@@ -1,13 +1,77 @@
 {% extends 'core/base.html' %}
+{%block title%}
+{{titulo}}
+{%endblock%}
 {% block content %}
+{% load custom_tags %}
+<script>
+  let contador = new Contador("cantidad",0,{{producto.cantidad}});
+  let precio = parseFloat({{producto.get_precio}});
+  function cambiarTotal(cantidad) {
+    contador.modificarCantidad(cantidad);
+    document.getElementById("total").textContent = precio* contador.valor;
+    console.log(contador.valor);
+}
+
+</script>
   <div class="w-full my-6 p-6 mx-auto bg-gray-10 rounded-xl shadow-xl bg-white">
-    <div class="w-full flex flex-row justify-between bg-gray-80">
+    <div class="w-full flex flex-row justify-between">
+      {% todas_categorias_hijas grupo as categorias %}
       {% for categoria in categorias %}
-        <a href="{% url 'category' categoria.pk %}" class="flex-1 border text-center"><p>{{ categoria.nombre }}</p></a>
+        <a href="{% url 'productos' %}?categoria={{categoria.pk}}" class="flex-1 border border-black text-center bg-gray-200 hover:bg-gray-300"><p>{{ categoria.nombre }}</p></a>
       {% endfor %}
     </div>
-    <div>
-      <h1 class="text-2xl font-bold text-center mt-10">{%block product_title%}{%endblock%}</h1>
+    <div class="flex flex-row grow mt-20">
+      <div class="w-1/2">
+        <img src=" {{producto.image.url}}" />
+      </div>
+      <div class="grow pl-20 justify-between flex flex-col">
+        <h1 class="font-bold text-5xl text-center">{{producto}}</h1>
+        <br><br>
+        {% if producto.cantidad > 0%}
+        <p class="text-center"><b>Disponible:</b> {{producto.cantidad}} unidades</p>
+        {%else%}
+        <p class="text-center font-bold">No disponible</p>
+        {%endif%}
+        {%if producto.rebaja > 0%}
+          <div class="flex flex-row p-6">
+            <div class="flex flex-col">
+              <p class="line-through text-gray-600">{{producto.precio}}€</p>
+              <p class="font-bold text-red-600">{{producto.get_precio_real}}</p>
+            </div>
+            <div class=" text-center w-full">
+              <h2 class="font-bold">OFERTA</h2>
+              <p>{{producto.rebaja}}%</p>    
+            </div>
+            <div>
+              <p>TOTAL<p id="total">{{producto.get_precio}}</p></p>
+            </div>
+          </div>
+        {%else%}
+        <p class="font-bold text-red-600 mb-6">{{producto.precio}}€</p>
+        {%endif%}
+        <div class="flex flex-row w-full bg-blue-400 font-bold">
+          <div class="h-full border border-black w-[8%] flex flex-col items-center justify-center bg-white">
+            <p class="text-center" id="cantidad">0</p>
+          </div>
+          <div class="flex flex-col items-center justify-center grow border border-black  hover:bg-blue-500">
+            <button onclick="mostrarNotificacion('Añadido al carrito correctamente')">Añadir al carrito</button>
+          </div>
+          <div class="flex flex-col  w-[5%]">
+            <button class="border border-black hover:bg-blue-500" onclick="cambiarTotal('1')">+</button>
+            <button class="border border-black hover:bg-blue-500" onclick="cambiarTotal('-1')">-</button>
+          </div>
+        </div>
+        <p class="rounded-xl bg-gray-200 p-6 mt-10"><strong>Descripcion:</strong><br>  {{producto.get_descripcion_formateada|safe}}</p> <br>
+        <p><strong>Categorias</strong></p>
+        {%obtener_todas_categorias producto.categoria.pk as categorias%}
+        {% for categoria in categorias %}
+          <a href="{% url 'productos' %}?categoria={{categoria.pk}}" class="ml-[3%] px-[2%] py-[1%] bg-gray-200 mt-[1%] w-1/3 border border-black hover:bg-gray-300">
+            <p>{{ categoria }}</p>
+          </a>
+        {% endfor %}
+      </div>
     </div>
+    {% show_product_list  productos%}
   </div>
 {% endblock %}
