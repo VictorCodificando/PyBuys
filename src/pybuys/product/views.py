@@ -31,9 +31,9 @@ def product_list(productos):
 
 
 def productos(request):
-    query = request.GET.get("query", "")
+    query = request.GET.get("query", "").strip()
     id_categoria = int(request.GET.get("categoria", 0))
-    productos = Productos.objects.filter(cantidad__gt=0)
+    productos = Productos.objects.filter(cantidad__gt=0).order_by("-creado")
     titulo = ""
     header = ""
     if id_categoria:
@@ -60,7 +60,7 @@ def productos(request):
         request,
         "core/index.html",
         {
-            "productos": productos,
+            "productos": productos[:16],
             "query": query,
             "grupo": id_categoria,
             "titulo": titulo,

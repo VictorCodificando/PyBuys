@@ -6,12 +6,13 @@
 {% load custom_tags %}
 <script>
   let contador = new Contador("cantidad",0,{{producto.cantidad}});
-  let precio = parseFloat({{producto.get_precio}});
+  let precio = parseFloat("{{producto.get_precio}}".replace(",","."));
+
   function cambiarTotal(cantidad) {
     contador.modificarCantidad(cantidad);
-    document.getElementById("total").textContent = precio* contador.valor;
-    console.log(contador.valor);
-}
+    document.getElementById("total").textContent = (parseFloat(precio) * parseFloat(contador.valor)).toFixed(2)+"€";
+
+  }
 
 </script>
   <div class="w-full my-6 p-6 mx-auto bg-gray-10 rounded-xl shadow-xl bg-white">
@@ -33,23 +34,24 @@
         {%else%}
         <p class="text-center font-bold">No disponible</p>
         {%endif%}
-        {%if producto.rebaja > 0%}
-          <div class="flex flex-row p-6">
+          <div class="flex flex-row p-6 justify-between">
             <div class="flex flex-col">
+              {%if producto.rebaja > 0%}
               <p class="line-through text-gray-600">{{producto.precio}}€</p>
-              <p class="font-bold text-red-600">{{producto.get_precio_real}}</p>
+              {%endif%}
+              <p class="font-bold text-red-600">{{producto.get_precio_real}}/ud</p>
             </div>
+            {%if producto.rebaja > 0%}
             <div class=" text-center w-full">
               <h2 class="font-bold">OFERTA</h2>
               <p>{{producto.rebaja}}%</p>    
             </div>
+            {%endif%}
             <div>
-              <p>TOTAL<p id="total">{{producto.get_precio}}</p></p>
+              <p>TOTAL<p id="total" class="font-bold text-red-600">{{producto.get_precio}}€</p></p>
             </div>
           </div>
-        {%else%}
-        <p class="font-bold text-red-600 mb-6">{{producto.precio}}€</p>
-        {%endif%}
+
         <div class="flex flex-row w-full bg-blue-400 font-bold">
           <div class="h-full border border-black w-[8%] flex flex-col items-center justify-center bg-white">
             <p class="text-center" id="cantidad">0</p>
