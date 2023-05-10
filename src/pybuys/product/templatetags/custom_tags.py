@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.template.loader import get_template
 from django.db.models import Q
 from product.models import Categorias, Productos
-
+from buysSales.models import ProductosEnCarrito
 from django.shortcuts import get_object_or_404
 
 register = template.Library()
@@ -42,3 +42,11 @@ def obtener_todas_categorias(categoria):
             categorias_padre.append(categoria)
     categorias_padre.reverse()
     return categorias_padre
+
+@register.simple_tag
+def cantidad_producto_en_carrito(id_producto, id_usuario):
+    producto = get_object_or_404(Productos, pk=id_producto)
+    carrito = ProductosEnCarrito.objects.filter(id_usuario=id_usuario, producto=producto)
+    if carrito.exists():
+        return carrito[0].cantidad
+    return 0

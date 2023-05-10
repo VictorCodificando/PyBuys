@@ -67,3 +67,33 @@ class SignUpForm(UserCreationForm):
     class Meta:
         model = User
         fields = ("username", "email", "password1", "password2")
+
+
+# Formulario para cambiar la usuario y/o correo electrónico
+class ChangeUserForm(forms.Form):
+    username = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                **field_attrs,
+                "placeholder": "Nombre de usuario",
+            }
+        )
+    )
+    
+    email = forms.CharField(
+        widget=forms.EmailInput(
+            attrs={
+                **field_attrs,
+                "placeholder": "Correo electrónico",
+            }
+        )
+    )
+
+    class Meta:
+        model = User
+        fields = ("username", "email")
+        
+
+    def __init__(self, *args, **kwargs):
+        super(ChangeUserForm, self).__init__(*args, **kwargs)
+

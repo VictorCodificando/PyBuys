@@ -22,8 +22,41 @@ class Contador {
   modificarCantidad(cantidadASumar) {
     cantidadASumar = parseInt(cantidadASumar);
     if (this.valor + cantidadASumar >= 0 && this.valor + cantidadASumar <= this.maximo) {
-     this.valor += cantidadASumar;
+      this.valor += cantidadASumar;
       document.getElementById(this.id_elemento).textContent = this.valor;
     }
-  } 
+  }
+}
+class ListaHovered {
+  constructor(id_elemento, destacado, normal, especificacion = "*") {
+
+    // destacado y normal son arrays de clases
+    // destacado se agrega al elemento cuando el mouse entra
+    // normal se agrega al elemento cuando el mouse sale
+    // id_elemento es el id del elemento que contiene los elementos a los que se les agregará el hover
+    document.addEventListener('DOMContentLoaded', function () {
+      const lista = document.getElementById(id_elemento);
+      const elementos = lista.querySelectorAll(especificacion);
+      elementos.forEach(elemento => {
+        elemento.addEventListener('mouseenter', function () {
+          destacado.forEach(clase => {
+            this.classList.add(clase);
+          });
+          normal.forEach(clase => {
+            this.classList.remove(clase);
+          });
+        });
+
+        elemento.addEventListener('mouseleave', function () {
+          destacado.forEach(clase => {
+            this.classList.remove(clase);
+          });
+          normal.forEach(clase => {
+            this.classList.add(clase);
+          });
+        });
+      });
+    });
+  }
+
 }

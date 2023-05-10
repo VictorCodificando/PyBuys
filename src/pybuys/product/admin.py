@@ -1,5 +1,7 @@
 from django.contrib import admin
 
+from buysSales.models import Compras
+
 # Register your models here.
 
 from .models import Productos, Categorias
@@ -37,6 +39,15 @@ class ProductosAdmin(admin.ModelAdmin):
     get_precio_real.short_description = 'Precio real'
     get_precio_real.admin_order_field = 'precio'
     
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        # Crear una compra relacionada con el producto guardado
+        compra = Compras(
+            id_usuario=request.user,  # Obtener el usuario que hizo la acción
+            id_producto=obj,  # El producto guardado es el que se va a comprar
+            cantidad=obj.cantidad,  # Comprar la cantidad total de productos
+        )
+        compra.save()
 
 
-admin.site.register(Productos)
+admin.site.register(Productos,ProductosAdmin)

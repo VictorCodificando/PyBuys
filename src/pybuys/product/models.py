@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator
 import os
 import re
 
@@ -25,7 +26,7 @@ class Productos(models.Model):
     precio = models.FloatField()
     image = models.ImageField(upload_to="products")
     rebaja = models.FloatField(default=0, null=True)
-    cantidad = models.IntegerField()
+    cantidad = models.IntegerField(validators=[MinValueValidator(0)])
     categoria = models.ForeignKey(Categorias, on_delete=models.CASCADE)
     descripcion = models.TextField(blank=True, null=True)
     creado = models.DateTimeField(auto_now_add=True)
@@ -41,7 +42,9 @@ class Productos(models.Model):
         super().delete(*args, **kwargs)
 
     def get_precio(self):
-        return self.precio - (self.precio * (self.rebaja/100))
+        precio_con_descuento = self.precio - (self.precio * (self.rebaja/100))
+        return round(precio_con_descuento, 2)
+
 
     def get_precio_real(self):
         return "{:.2f}€".format(self.get_precio())

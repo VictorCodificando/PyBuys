@@ -4,36 +4,77 @@
 {%endblock%}
 {% block content %}
 {% load custom_tags %}
+{%cantidad_producto_en_carrito producto.pk request.user.pk as total_carrito%}
 <script>
-  let contador = new Contador("cantidad",0,{{producto.cantidad}});
+  let maximo = {{producto.cantidad}} - {{total_carrito}};
+  let contador = new Contador("cantidad",0,maximo);
   let precio = parseFloat("{{producto.get_precio}}".replace(",","."));
 
   function cambiarTotal(cantidad) {
     contador.modificarCantidad(cantidad);
-    document.getElementById("total").textContent = (parseFloat(precio) * parseFloat(contador.valor)).toFixed(2)+"€";
-
+    document.getElementById("total").textContent = (parseFloat(precio) * contador.valor).toFixed(2)+"€";
   }
+  
+  function comprar(){
+    if(contador.valor <= 0){
+      return;
+    }
+    try{
+      const form = document.getElementById('add-to-cart-form');
+      const cantidad = contador.valor;
+      const enCarrito = document.getElementById("enCarrito");
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', `/buysSales/add_to_cart/{{producto.pk}}/`, true);
+      xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      xhr.onload = function () {
+          if (xhr.status === 200) {
+              let response = JSON.parse(xhr.responseText);
+              if (response.error) {
+                mostrarNotificacion(response.error);
+            } else {
+              mostrarNotificacion('Producto agregado al carrito!');
+              cambiarTotal(-1*cantidad);
+              maximo = maximo - cantidad;
+              contador.maximo = maximo;
+              enCarrito.removeAttribute("hidden");
+              enCarrito.innerHTML = "<b>En carrito:</b> " + (parseInt(enCarrito.textContent.split(" ")[2]) + parseInt(cantidad)) + " unidades";
+            }
+          } else {
+            mostrarNotificacion('Error al agregar el producto al carrito');
+          }
+      };
+      xhr.send("cantidad="+cantidad);
+    }catch(e){
+      mostrarNotificacion('Error al agregar el producto al carrito');
+      console.log(e);
+    }
+  }
+  let listaHoveredCategorias=new ListaHovered('categorias',["bg-purple-500","px-5"],["bg-purple-400","px-0"],"a");
 
 </script>
   <div class="w-full my-6 p-6 mx-auto bg-gray-10 rounded-xl shadow-xl bg-white">
-    <div class="w-full flex flex-row justify-between">
+    <div class="w-full flex flex-row justify-between" id="categorias">
       {% todas_categorias_hijas grupo as categorias %}
       {% for categoria in categorias %}
-        <a href="{% url 'productos' %}?categoria={{categoria.pk}}" class="flex-1 border border-black text-center bg-gray-200 hover:bg-gray-300"><p>{{ categoria.nombre }}</p></a>
+        <a href="{% url 'productos' %}?categoria={{categoria.pk}}" class="cursor-pointer transition-all duration-300 font-bold py-6 flex-1 border border-black text-center bg-purple-400"><p>{{ categoria.nombre }}</p></a>
       {% endfor %}
     </div>
     <div class="flex flex-row grow mt-20">
-      <div class="w-1/2">
-        <img src=" {{producto.image.url}}" />
+      <div class="w-[35%]">
+        <img src=" {{producto.image.url}}" class="w-full"/>
       </div>
-      <div class="grow pl-20 justify-between flex flex-col">
+      <div class="pl-20 justify-between flex flex-col w-[65%]">
         <h1 class="font-bold text-5xl text-center">{{producto}}</h1>
         <br><br>
+        <div class="flex flex-col pl-[40%]">
         {% if producto.cantidad > 0%}
-        <p class="text-center"><b>Disponible:</b> {{producto.cantidad}} unidades</p>
+        <p class=""><b>Disponibles:</b> {{producto.cantidad}} unidades</p>
+        <p class="" {% if total_carrito <= 0 %}hidden="true"{% else %}{% endif %} id="enCarrito"><b>En carrito:</b> {{total_carrito}} unidades</p>
         {%else%}
-        <p class="text-center font-bold">No disponible</p>
+        <p class="font-bold">Producto agotado</p>
         {%endif%}
+      </div>
           <div class="flex flex-row p-6 justify-between">
             <div class="flex flex-col">
               {%if producto.rebaja > 0%}
@@ -48,27 +89,48 @@
             </div>
             {%endif%}
             <div>
-              <p>TOTAL<p id="total" class="font-bold text-red-600">{{producto.get_precio}}€</p></p>
+              <p>TOTAL<p id="total" class="font-bold text-red-600">0.00€</p></p>
             </div>
           </div>
-
-        <div class="flex flex-row w-full bg-blue-400 font-bold">
+          {% if producto.cantidad > 0%}
+        <div class="flex flex-row w-full bg-gradient-to-r from-blue-500 to-purple-400 font-bold">
           <div class="h-full border border-black w-[8%] flex flex-col items-center justify-center bg-white">
             <p class="text-center" id="cantidad">0</p>
           </div>
-          <div class="flex flex-col items-center justify-center grow border border-black  hover:bg-blue-500">
-            <button onclick="mostrarNotificacion('Añadido al carrito correctamente')">Añadir al carrito</button>
+          <div class="flex flex-col items-center justify-center grow border border-black bg-black bg-opacity-0 hover:bg-opacity-[10%]">
+            <button onclick="comprar()" class="w-full h-full">Añadir al carrito</button>
           </div>
           <div class="flex flex-col  w-[5%]">
-            <button class="border border-black hover:bg-blue-500" onclick="cambiarTotal('1')">+</button>
-            <button class="border border-black hover:bg-blue-500" onclick="cambiarTotal('-1')">-</button>
+            <button class="border border-black bg-black bg-opacity-0 hover:bg-opacity-[10%]" onclick="cambiarTotal('1')">+</button>
+            <button class="border border-black bg-black bg-opacity-0 hover:bg-opacity-[10%]" onclick="cambiarTotal('-1')">-</button>
           </div>
         </div>
+        {%endif%}
+        {% if request.user.is_staff %}
+        <h1 class="text-center text-purple-500 font-bold text-xl">Panel de administrador</h1>
+        <div class="border border-black p-6 rounded-xl">
+        <div class="flex flex-row w-full bg-gradient-to-r from-blue-500 to-purple-400 font-bold">
+          <div class="h-full border border-black w-[8%] flex flex-col items-center justify-center bg-white">
+            <p class="text-center h-full" id="cantidadStock">0</p>
+          </div>
+          <div class="flex flex-col items-center justify-center grow border border-black bg-black bg-opacity-0 hover:bg-opacity-[10%]">
+            <button onclick="comprar()" class="w-full h-full">Añadir stock</button>
+          </div>
+          <div class="flex flex-col  w-[5%]">
+            <button class="border border-black bg-black bg-opacity-0 hover:bg-opacity-[10%]" onclick="cambiarTotal('1')">+</button>
+            <button class="border border-black bg-black bg-opacity-0 hover:bg-opacity-[10%]" onclick="cambiarTotal('-1')">-</button>
+          </div>
+        </div>
+          <p class="text-red-600">¡Cuidado, cada vez que añadas se generará una compra a tu nombre!</p>
+          <br>
+          <p class="text-red-600">Para corregir una compra porfavor añada la cantidad en negativo</p>
+        </div>
+        {%endif%}
         <p class="rounded-xl bg-gray-200 p-6 mt-10"><strong>Descripcion:</strong><br>  {{producto.get_descripcion_formateada|safe}}</p> <br>
         <p><strong>Categorias</strong></p>
         {%obtener_todas_categorias producto.categoria.pk as categorias%}
         {% for categoria in categorias %}
-          <a href="{% url 'productos' %}?categoria={{categoria.pk}}" class="ml-[3%] px-[2%] py-[1%] bg-gray-200 mt-[1%] w-1/3 border border-black hover:bg-gray-300">
+          <a href="{% url 'productos' %}?categoria={{categoria.pk}}" class=" font-bold ml-[3%] px-[2%] py-[1%] bg-purple-400 mt-[1%] w-1/3 border border-black hover:bg-purple-500" id="subcategorias">
             <p>{{ categoria }}</p>
           </a>
         {% endfor %}

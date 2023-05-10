@@ -47,10 +47,10 @@
                   </li>
                 {% endif %}
                 <li class="text-center">
-                  <a href="#" class="block p-4 hover:bg-gray-100">Carrito</a>
+                  <a href="{%url 'shopping_cart'%}" class="block p-4 hover:bg-gray-100">Carrito</a>
                 </li>
                 <li class="text-center">
-                  <a href="#" class="block p-4 hover:bg-gray-100">Configuración de cuenta</a>
+                  <a href="{%url 'configuration'%}" class="block p-4 hover:bg-gray-100">Configuración de cuenta</a>
                 </li>
                 <li class="text-center">
                   <a href="{%url 'logout'%}" class="block p-4 hover:bg-gray-100">Cerrar sesión</a>
@@ -74,6 +74,12 @@
 
   {% if request.user.is_authenticated %}
   <script>
+  {% if messages %}
+    {% for message in messages %}
+      mostrarNotificacion('{{ message }}');
+    {% endfor %}
+  {% endif %}
+  
     $(document).ready(function () {
       $('#user-menu-btn').click(function () {
         $('#user-menu').toggle()
@@ -82,6 +88,7 @@
     const barraBusqueda = document.getElementById('barraBusqueda')
     const lista = document.getElementById('resultados')
     const botonBusqueda = document.getElementById('botonBusqueda')
+    botonBusqueda.disabled = true;
     barraBusqueda.addEventListener('input', () => {
       var query =barraBusqueda.value.trim();
       if(query===""){
