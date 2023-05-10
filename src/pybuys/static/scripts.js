@@ -13,19 +13,27 @@ function mostrarNotificacion(message) {
   }
 }
 class Contador {
-  constructor(id_elemento, inicial, maximo) {
+  constructor(id_elemento, inicial, maximo, minimo = 0) {
     this.id_elemento = id_elemento;
     this.valor = inicial;
     this.maximo = maximo;
+    this.minimo = minimo;
   }
 
   modificarCantidad(cantidadASumar) {
     cantidadASumar = parseInt(cantidadASumar);
-    if (this.valor + cantidadASumar >= 0 && this.valor + cantidadASumar <= this.maximo) {
+    const elemento = document.getElementById(this.id_elemento);
+    let valorActual = parseInt(elemento.textContent || elemento.value);
+    if (valorActual + cantidadASumar >= this.minimo && valorActual + cantidadASumar <= this.maximo) {
       this.valor += cantidadASumar;
-      document.getElementById(this.id_elemento).textContent = this.valor;
+      if (elemento.tagName === 'INPUT') {
+        elemento.value = this.valor;
+      } else {
+        elemento.textContent = this.valor;
+      }
+      console.log(valorActual);
     }
-  }
+  }  
 }
 class ListaHovered {
   constructor(id_elemento, destacado, normal, especificacion = "*") {

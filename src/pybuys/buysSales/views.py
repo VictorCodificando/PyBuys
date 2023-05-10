@@ -3,9 +3,12 @@ from django.shortcuts import get_object_or_404, redirect, render
 from buysSales.models import Compras, ProductosEnCarrito, Ventas
 from product.models import Productos
 from django.db import transaction
-from django.http import JsonResponse
+from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+
+from utils.utils import eliminar_de_carritos
 
 def shopping_cart(request):
     if request.method == 'POST':
@@ -48,7 +51,7 @@ def shopping_cart(request):
 
 
 
-def buy(request):
+def buys(request):
     return render(request, "buysSales/buys.html")
 
 from django.http import JsonResponse
@@ -77,3 +80,29 @@ def add_to_cart(request, id_producto):
 
         return JsonResponse({'success': "Producto añadido al carrito con éxito."})
 
+
+@login_required
+def add_stock(request, id_producto):
+    producto = get_object_or_404(Productos, pk=id_producto)
+    if request.method == "POST":
+        cantidad_stock = int(request.POST.get('cantidad_stock'))
+
+        # Asegura de que el usuario es un administrador antes de permitirle añadir stock
+        if not request.user.is_staff:
+            return HttpResponseForbidden()
+
+        # Añade la cantidad de stock al producto
+        producto.cantidad += cantidad_stock
+        producto.save()
+
+        # Registra la compra
+        compra = Compras(id_usuario=request.user, id_producto=producto, cantidad=cantidad_stock)
+        compra.save()
+
+        # Comprueba si el producto se ha agotado y, si es así, elimina el producto de todos los carritos
+        if producto.cantidad <= 0:
+            eliminar_de_carritos(producto.pk)
+
+        return redirect('detail', pk=producto.id)
+
+    return render(request, "product/detail.html", {"producto": producto})

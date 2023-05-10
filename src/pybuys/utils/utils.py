@@ -1,3 +1,4 @@
+from buysSales.models import ProductosEnCarrito
 from product.models import Categorias, Productos
 from django.contrib.auth.models import User
 
@@ -21,4 +22,6 @@ def modificarUsuario(oldusername, newusername, newemail):
     user.email = newemail
     user.save()
     return user
-    
+
+def eliminar_de_carritos(pk_producto):
+    ProductosEnCarrito.objects.filter(producto_id=pk_producto).delete()

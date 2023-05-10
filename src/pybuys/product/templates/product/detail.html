@@ -14,6 +14,9 @@
     contador.modificarCantidad(cantidad);
     document.getElementById("total").textContent = (parseFloat(precio) * contador.valor).toFixed(2)+"€";
   }
+  {%if request.user.is_staff%}
+  let contadorStock = new Contador("cantidadStock",0,10000000,-1*{{producto.cantidad}});
+  {%endif%}
   
   function comprar(){
     if(contador.valor <= 0){
@@ -107,25 +110,24 @@
         </div>
         {%endif%}
         {% if request.user.is_staff %}
-        <h1 class="text-center text-purple-500 font-bold text-xl">Panel de administrador</h1>
+        <h1 class="text-center text-purple-500 font-bold text-xl mt-10">Panel de administrador</h1>
         <div class="border border-black p-6 rounded-xl">
-        <div class="flex flex-row w-full bg-gradient-to-r from-blue-500 to-purple-400 font-bold">
-          <div class="h-full border border-black w-[8%] flex flex-col items-center justify-center bg-white">
-            <p class="text-center h-full" id="cantidadStock">0</p>
-          </div>
-          <div class="flex flex-col items-center justify-center grow border border-black bg-black bg-opacity-0 hover:bg-opacity-[10%]">
-            <button onclick="comprar()" class="w-full h-full">Añadir stock</button>
-          </div>
-          <div class="flex flex-col  w-[5%]">
-            <button class="border border-black bg-black bg-opacity-0 hover:bg-opacity-[10%]" onclick="cambiarTotal('1')">+</button>
-            <button class="border border-black bg-black bg-opacity-0 hover:bg-opacity-[10%]" onclick="cambiarTotal('-1')">-</button>
-          </div>
+            <form action="{% url 'add_stock' producto.pk %}" method="POST"  class="flex flex-row w-full bg-gradient-to-r from-blue-500 to-purple-400 font-bold">
+                {% csrf_token %}
+                <input class="text-center w-[8%] border border-black items-center justify-center" readonly type="text" id="cantidadStock" value="0" name="cantidad_stock">
+                <div class="flex flex-col items-center justify-center grow border border-black bg-black bg-opacity-0 hover:bg-opacity-[10%]">
+                    <input type="submit" class="w-full" value="Añadir stock">
+                </div>
+                <div class="flex flex-col w-[5%]">
+                    <button type="button" class="border border-black bg-black bg-opacity-0 hover:bg-opacity-[10%]" onclick="contadorStock.modificarCantidad('1')">+</button>
+                    <button type="button" class="border border-black bg-black bg-opacity-0 hover:bg-opacity-[10%]" onclick="contadorStock.modificarCantidad('-1')">-</button>
+                </div>
+            </form>
+            <p class="text-red-600">¡Cuidado, cada vez que añadas se generará una compra a tu nombre!</p>
+            <br>
+            <p class="text-red-600">Para corregir una compra por favor añada la cantidad en negativo</p>
         </div>
-          <p class="text-red-600">¡Cuidado, cada vez que añadas se generará una compra a tu nombre!</p>
-          <br>
-          <p class="text-red-600">Para corregir una compra porfavor añada la cantidad en negativo</p>
-        </div>
-        {%endif%}
+    {% endif %}    
         <p class="rounded-xl bg-gray-200 p-6 mt-10"><strong>Descripcion:</strong><br>  {{producto.get_descripcion_formateada|safe}}</p> <br>
         <p><strong>Categorias</strong></p>
         {%obtener_todas_categorias producto.categoria.pk as categorias%}

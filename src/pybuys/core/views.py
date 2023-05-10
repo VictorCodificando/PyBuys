@@ -38,7 +38,11 @@ def signup(request):
 
 @login_required
 def index(request):
-    productos = Productos.objects.filter(cantidad__gt=0).order_by("-creado")[:16]
+    if not request.user.is_staff:
+        productos = Productos.objects.filter(cantidad__gt=0).order_by("-creado")[:16]
+    else:
+        productos = Productos.objects.order_by("-creado")[:16]
+        
     return render(
         request,
         "core/index.html",
