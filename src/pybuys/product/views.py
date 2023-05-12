@@ -36,7 +36,10 @@ def product_list(productos):
 def productos(request):
     query = request.GET.get("query", "").strip()
     id_categoria = int(request.GET.get("categoria", 0))
-    productos = Productos.objects.filter(cantidad__gt=0).order_by("-creado")
+    if not request.user.is_staff:
+        productos = Productos.objects.filter(cantidad__gt=0).order_by("-creado")
+    else:
+        productos = Productos.objects.order_by("-creado")
     titulo = ""
     header = ""
     if id_categoria:

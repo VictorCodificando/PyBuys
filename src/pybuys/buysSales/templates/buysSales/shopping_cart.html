@@ -14,7 +14,7 @@
       </thead>
       <tbody>
         {% for producto, cantidad in productos %}
-          <tr id="{{producto.pk}}_parent">
+          <tr id="{{ producto.pk }}_parent">
             <td class="bg-white flex justify-center items-center border border-black border-opacity-25">
               <img src="{{ producto.image.url }}" class="grow object-contain h-[100px]" />
             </td>
@@ -52,20 +52,32 @@
         precios.push(parseFloat("{{ producto.get_precio }}".replace(",",".")));
         cantidades.push({{cantidad}});
         contadores.push(new Contador('{{producto.pk}}',{{cantidad}},{{producto.cantidad}}));
+        añadirAlCarrito({{producto.pk}},0);
       {% endfor %}
       
+      cambiarPrecioFinal();
+
       function añadirAlCarrito(pk, cantidad){
         const contador = contadores.find((contador) => contador.id_elemento === ""+pk);
         cantidad=parseInt(cantidad);
-        if(contador.valor + cantidad < 0 || contador.valor + cantidad > contador.maximo){
+        if(contador.valor + cantidad < 0){
           return;
         }
         
+        if(contador.valor + cantidad > contador.maximo){
+            if (contador.valor > contador.maximo){
+              cantidad = contador.maximo - contador.valor;
+            }
+            else{
+              return;
+            }
+        }
+
         try{
           const form = document.getElementById('add-to-cart-form');
           const cantidadTexto =  document.getElementById(pk);
           const precioTexto = document.getElementById(pk+"_precio");
-
+          const precio=precios[contadores.indexOf(contador)];
           const xhr = new XMLHttpRequest();
           xhr.open('POST', `/buysSales/add_to_cart/`+pk+`/`, true);
           xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
@@ -73,7 +85,9 @@
           xhr.onload = function () {
               if (xhr.status === 200) {
                   contador.modificarCantidad(cantidad);
+                  cambiarPrecioFinal();
                   cantidadTexto.innerHTML = contador.valor;
+                  precioTexto.innerHTML = (contador.valor * precio).toFixed(2) + " €";
                   if(contador.valor == 0){
                     document.getElementById(pk+"_parent").remove();
                   }
@@ -86,6 +100,15 @@
           mostrarNotificacion('Error al intentar hacer la operacion');
           console.log(e);
         }
+
+      }
+      //Cambiar el precio final
+      function cambiarPrecioFinal(){
+        let total = 0;
+        for(let i = 0; i < precios.length; i++){
+          total += precios[i] * contadores[i].valor;
+        }
+        document.getElementById("total").innerHTML = total.toFixed(2) + " €";
       }
     </script>
   </div>

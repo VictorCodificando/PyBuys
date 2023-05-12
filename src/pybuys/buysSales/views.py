@@ -3,11 +3,11 @@ from django.shortcuts import get_object_or_404, redirect, render
 from buysSales.models import Compras, ProductosEnCarrito, Ventas
 from product.models import Productos
 from django.db import transaction
-from django.http import HttpResponseForbidden, JsonResponse
+from django.http import Http404, HttpResponseForbidden, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-
+from django.http import JsonResponse
 from utils.utils import eliminar_de_carritos
 
 def shopping_cart(request):
@@ -49,12 +49,17 @@ def shopping_cart(request):
 
         return render(request, "buysSales/shopping_cart.html", {"productos": productos_carrito})
 
-
-
+@login_required
 def buys(request):
-    return render(request, "buysSales/buys.html")
+    if not request.user.is_staff and not request.user.is_superuser:
+        raise Http404("No tienes permiso para ver esta página.")
 
-from django.http import JsonResponse
+    if request.user.is_superuser:
+        compras = Compras.objects.all()
+    else:
+        compras = Compras.objects.filter(id_usuario=request.user)
+
+    return render(request, "buysSales/buys.html", {"compras": compras})
 
 def add_to_cart(request, id_producto):
     if request.method == 'POST':
@@ -76,9 +81,15 @@ def add_to_cart(request, id_producto):
                 return JsonResponse({'error': f"No hay suficiente cantidad de {producto.nombre} en el inventario para añadir más al carrito."}, status=400)
 
             carrito.cantidad += cantidad
-            carrito.save()
+            # Si la cantidad es 0, borra el producto del carrito.
+            if carrito.cantidad == 0:
+                carrito.delete()
+                return JsonResponse({'success': "Producto eliminado del carrito."})
+            else:
+                carrito.save()
 
         return JsonResponse({'success': "Producto añadido al carrito con éxito."})
+
 
 
 @login_required
@@ -98,6 +109,17 @@ def add_stock(request, id_producto):
         # Registra la compra
         compra = Compras(id_usuario=request.user, id_producto=producto, cantidad=cantidad_stock)
         compra.save()
+
+        # Comprueba si la cantidad de producto en el carrito es mayor que la cantidad de producto en stock
+        # Si es así, reduce la cantidad en el carrito al nivel de stock
+        carritos = ProductosEnCarrito.objects.filter(producto=producto)
+        for carrito in carritos:
+            if carrito.cantidad > producto.cantidad:
+                carrito.cantidad = producto.cantidad
+                if carrito.cantidad == 0:
+                    carrito.delete()
+                else:
+                    carrito.save()
 
         # Comprueba si el producto se ha agotado y, si es así, elimina el producto de todos los carritos
         if producto.cantidad <= 0:

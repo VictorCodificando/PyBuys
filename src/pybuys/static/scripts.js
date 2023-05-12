@@ -24,7 +24,8 @@ class Contador {
     cantidadASumar = parseInt(cantidadASumar);
     const elemento = document.getElementById(this.id_elemento);
     let valorActual = parseInt(elemento.textContent || elemento.value);
-    if (valorActual + cantidadASumar >= this.minimo && valorActual + cantidadASumar <= this.maximo) {
+    let puedeSumar = (valorActual + cantidadASumar >= this.minimo && cantidadASumar<0) || (valorActual + cantidadASumar <= this.maximo && cantidadASumar>0);
+    if (puedeSumar) {
       this.valor += cantidadASumar;
       if (elemento.tagName === 'INPUT') {
         elemento.value = this.valor;
