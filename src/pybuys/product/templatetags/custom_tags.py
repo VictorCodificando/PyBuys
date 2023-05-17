@@ -1,11 +1,10 @@
 from django import template
-from django.template.loader import render_to_string
-from django.contrib.auth import get_user_model
-from django.template.loader import get_template
-from django.db.models import Q
-from product.models import Categorias, Productos
-from buysSales.models import ProductosEnCarrito
 from django.shortcuts import get_object_or_404
+from django.template.loader import get_template
+
+from buysSales.models import ProductosEnCarrito
+from product.models import Categorias, Productos
+
 
 register = template.Library()
 
@@ -13,7 +12,6 @@ register = template.Library()
 @register.simple_tag
 def show_product_list(productos):
     return {"productos": productos}
-
 
 product_template = get_template("product/product_list.html")
 register.inclusion_tag(product_template)(show_product_list)

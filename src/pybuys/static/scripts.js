@@ -32,7 +32,6 @@ class Contador {
       } else {
         elemento.textContent = this.valor;
       }
-      console.log(valorActual);
     }
   }  
 }

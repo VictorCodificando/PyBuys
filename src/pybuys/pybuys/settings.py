@@ -26,7 +26,8 @@ SECRET_KEY = "django-insecure-*_p+%^1d(v_xs7_u%+0l&v2(!0-^1v641mwitx)n50*f9q-^y!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+
+ALLOWED_HOSTS = ["*"]
 LOGIN_URL="/login/"
 LOGIN_REDIRECT_URL = "/index"
 LOGOUT_REDIRECT_URL = ""
@@ -61,7 +62,7 @@ ROOT_URLCONF = "pybuys.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, 'pybuys/templates')],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -125,15 +126,16 @@ USE_TZ = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
+# Static files
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
-MEDIA_URL = "media/"
-MEDIA_ROOT = BASE_DIR / "media"
 
+# Media files
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

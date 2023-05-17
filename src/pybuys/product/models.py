@@ -1,7 +1,9 @@
-from django.db import models
-from django.core.validators import MinValueValidator
 import os
 import re
+
+from django.core.validators import MinValueValidator
+from django.db import models
+
 
 from pybuys import settings
 
@@ -35,16 +37,14 @@ class Productos(models.Model):
         return self.nombre
 
     def delete(self, *args, **kwargs):
-        # Eliminar la imagen del producto si existe
         if self.image:
             os.remove(os.path.join(settings.MEDIA_ROOT, self.image.name))
-        # Llamar al método delete() del modelo base para eliminar el objeto
         super().delete(*args, **kwargs)
 
     def get_precio(self):
         precio_con_descuento = self.precio - (self.precio * (self.rebaja/100))
         return round(precio_con_descuento, 2)
-
+    
 
     def get_precio_real(self):
         return "{:.2f}€".format(self.get_precio())
@@ -52,11 +52,6 @@ class Productos(models.Model):
     def get_descripcion_formateada(self):
         # Sustituir '*' por un punto de bala y agregar saltos de línea después de cada punto
         texto = self.descripcion.replace('* ', '• ').replace('.', '.<br>').replace('\n', '<br>')
-        
-        #Identifica todo lo que este dentro de 3 comillas y ponlo en negrita con <strong> y haz un salto de linea
         # Identificar todo lo que esté dentro de 3 comillas y ponerlo en negrita
-        
         texto = re.sub(r'\'{3}(.*?)\'{3}', r'<br><strong>\1</strong><br>', texto)
-
-        # Devolver el texto envuelto en etiquetas <p>
         return f'{texto}'

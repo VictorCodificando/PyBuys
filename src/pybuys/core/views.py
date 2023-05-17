@@ -1,15 +1,13 @@
-from django.shortcuts import redirect, render
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
-from django.contrib.auth.models import User
-from core.forms import ChangeUserForm, SignUpForm, LoginForm
-from product.models import Categorias, Productos
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.shortcuts import redirect, render
 
+from core.forms import ChangeUserForm, SignUpForm
+from product.models import Productos
 from pybuys.settings import MEDIA_URL
 from utils.utils import modificarUsuario
 
-# Create your views here.
 
 
 def home(request):

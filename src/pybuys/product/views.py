@@ -1,38 +1,20 @@
-import csv
-import datetime
-import logging
-import json
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.forms import ImageField
 from django.http import HttpResponse
-# Create your views here.
-
-from django.shortcuts import render, get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django import template
-import product
-import utils
+
+import json
 from product.models import Categorias, Productos
+import utils
 
-register = template.Library()
 
-
+@login_required
 def product_detail(request, pk):
     producto = get_object_or_404(Productos, pk=pk)
     return render(request, "product/detail.html", {"producto": producto})
 
-
-def product_new(request):
-    return render(request, "product/new.html", {})
-
-
-def product_edit(request, pk):
-    return render(request, "product/edit.html", {})
-
-
-def product_list(productos):
-    return render("product/list.html", {"productos", productos})
-
-
+@login_required
 def productos(request):
     query = request.GET.get("query", "").strip()
     id_categoria = int(request.GET.get("categoria", 0))
@@ -74,7 +56,7 @@ def productos(request):
         },
     )
 
-
+@login_required
 def buscar_productos(request):
     query = request.GET.get("query", "")
     productos = Productos.objects.filter(
@@ -83,25 +65,3 @@ def buscar_productos(request):
     productos_list = [p['nombre'] for p in productos]
     productos_json = json.dumps(productos_list)
     return HttpResponse(productos_json, content_type='application/json')
-
-
-"""
-def category(request, pk):
-    categoria = Categorias.objects.get(pk=pk)
-    productos = Productos.objects.all()
-    # filtrar los productos que pertenecen a la categoría
-    productos_filtrados = []
-    for producto in productos:
-        if utils.pertenece_a_categoria(producto.categoria, categoria):
-            productos_filtrados.append(producto)
-    categorias = Categorias.objects.filter(grupo__isnull=True)
-    return render(
-        request,
-        "product/category.html",
-        {
-            "productos": productos_filtrados,
-            "categorias": categorias,
-            "categoria": categoria,
-        },
-    )
-"""

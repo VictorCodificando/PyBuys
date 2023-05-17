@@ -1,15 +1,14 @@
-from django.shortcuts import get_object_or_404, redirect, render
-
-from buysSales.models import Compras, ProductosEnCarrito, Ventas
-from product.models import Productos
-from django.db import transaction
-from django.http import Http404, HttpResponseForbidden, JsonResponse
-from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.db import transaction
+from django.http import Http404, HttpResponseForbidden, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from product.models import Productos
+from buysSales.models import Compras, ProductosEnCarrito, Ventas
 from utils.utils import eliminar_de_carritos
 
+
+@login_required
 def shopping_cart(request):
     if request.method == 'POST':
         carrito_usuario = ProductosEnCarrito.objects.filter(id_usuario=request.user.id)
@@ -19,13 +18,13 @@ def shopping_cart(request):
             return redirect('shopping_cart')
         with transaction.atomic():
             for producto, cantidad in productos_carrito:
-                # Verificar si hay suficiente cantidad en el inventario
+                # Verifica si hay suficiente cantidad en el inventario
                 if producto.cantidad < cantidad:
                     messages.error(request, f"No hay suficiente cantidad de {producto.nombre} en el inventario.")
                     return redirect('shopping_cart')
 
             for producto, cantidad in productos_carrito:
-                # Crear un nuevo registro de compra
+                # Crea un nuevo registro de compra
                 venta = Ventas(
                     id_usuario=request.user,
                     id_producto=producto,
@@ -33,11 +32,11 @@ def shopping_cart(request):
                 )
                 venta.save()
 
-                # Actualizar la cantidad de producto en el inventario
+                # Actualiza la cantidad de producto en el inventario
                 producto.cantidad -= cantidad
                 producto.save()
 
-                # Eliminar producto del carrito
+                # Elimina producto del carrito
                 carrito_usuario.filter(producto=producto).delete()
 
             messages.success(request, "Compra realizada con éxito.")
@@ -61,6 +60,7 @@ def buys(request):
 
     return render(request, "buysSales/buys.html", {"compras": compras})
 
+@login_required
 def add_to_cart(request, id_producto):
     if request.method == 'POST':
         cantidad = request.POST.get('cantidad')

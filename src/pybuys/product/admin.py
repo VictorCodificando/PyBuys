@@ -1,11 +1,7 @@
 from django.contrib import admin
 
-from buysSales.models import Compras
-
-# Register your models here.
-
 from .models import Productos, Categorias
-
+from buysSales.models import Compras
 
 class CategoriasAdmin(admin.ModelAdmin):
     list_display = ('nombre', 'grupo', 'subgrupos')

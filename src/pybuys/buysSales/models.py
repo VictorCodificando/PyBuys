@@ -1,7 +1,8 @@
-from django.db import models
 from django.contrib.auth.models import User
-from product.models import Productos
 from django.core.validators import MinValueValidator
+from django.db import models
+
+from product.models import Productos
 
 class ProductosEnCarrito(models.Model):
     class Meta:
