@@ -103,6 +103,9 @@ def add_stock(request, id_producto):
             return HttpResponseForbidden()
 
         # Añade la cantidad de stock al producto
+        if producto.cantidad + cantidad_stock < 0:
+            messages.error(request, "La cantidad de stock debe ser mayor que 0.")
+            return redirect('detail', pk=producto.id)
         producto.cantidad += cantidad_stock
         producto.save()
 

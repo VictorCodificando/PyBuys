@@ -1,28 +1,73 @@
-HAY QUE TENER PYTHON INSTALADO
-1- Abrir la cmd en src con permisos de adminstrador
-2- Poner el siguiente comando para ejecutar el entorno virtual:
-pybuys_env\Scripts\activate.bat
+Paso 1: Preparación
 
-3-Luego simplemente llamamos al .bat de ejecutar y ya el solo se encarga de ejecutar todo lo necesario
-EJECUTAR.bat
+Asegúrate de tener Python 3.x instalado en tu sistema. 
+Puedes verificarlo ejecutando el comando python --version en tu terminal. 
+Si no tienes Python instalado, descárgalo e instálalo desde el sitio web oficial de Python (https://www.python.org/).
 
-DEBER APARECER ALGO ASI:
-------------------------------------------------------------
-No changes detected
-Operations to perform:
-  Apply all migrations: admin, auth, contenttypes, product, sessions
-Running migrations:
-  No migrations to apply.
-Watching for file changes with StatReloader
-Performing system checks...
+Paso 2: Crear y activar el entorno virtual
 
-System check identified no issues (0 silenced).
-May 02, 2023 - 00:33:21
-Django version 4.2, using settings 'pybuys.settings'
-Starting development server at http://127.0.0.1:8000/
-Quit the server with CTRL-BREAK.
--------------------------------------------------------------
+-Abre una terminal o símbolo del sistema.
+-Navega hasta la ubicación deseada para crear el entorno virtual para el proyecto "pybuys".
+-Ejecuta el siguiente comando para crear el entorno virtual:
 
-4- Abrimos la dirección 127.0.0.1:8000 o localhost:8000
-5- Nos vamos a la dirección localhost:8000/admin y metemos el usuario de prueba "admin" y la contraseña de prueba "1234"
-6- Agregamos categorias, luego productos y la aplicacion estaría lista para su uso.
+---------------------------------
+python -m venv pybuys_env
+---------------------------------
+
+Esto creará un nuevo directorio llamado "pybuys_env" que contendrá el entorno virtual.
+-Activa el entorno virtual ejecutando el siguiente comando:
+
+En Windows:
+
+---------------------------------
+pybuys_env\Scripts\activate
+---------------------------------
+
+En Linux o macOS:
+
+---------------------------------
+source pybuys_env/bin/activate
+---------------------------------
+
+Después de ejecutar este comando, verás que el prefijo del terminal cambia y muestra el nombre del entorno virtual entre paréntesis, indicando que el entorno virtual está activo.
+
+Paso 3: Clonar el proyecto y navegar al directorio
+
+-Clona el proyecto "pybuys" desde el repositorio correspondiente utilizando Git o descargándolo como un archivo ZIP.
+-Descomprime el archivo ZIP (si se descargó como ZIP) y navega a la carpeta "pybuys".
+
+Paso 4: Instalar las dependencias
+
+-Asegúrate de que tu entorno virtual esté activo (verificar que el prefijo del terminal muestre el nombre del entorno virtual entre paréntesis).
+-Ejecuta el siguiente comando para instalar las dependencias requeridas:
+
+---------------------------------
+pip install -r requirements.txt
+---------------------------------
+
+Esto instalará Django, MSSQL y Pillow, junto con otras dependencias necesarias para el proyecto "pybuys".
+
+Paso 5: Configurar la base de datos
+
+-Abre el archivo pybuys/settings.py en un editor de texto.
+-Busca la sección DATABASES y actualiza la configuración según tus credenciales y configuración de MSSQL.
+
+Paso 6: Migrar la base de datos
+
+-Asegúrate de que tu entorno virtual esté activo.
+-Ejecuta el siguiente comando para aplicar las migraciones y crear las tablas de la base de datos:
+
+---------------------------------
+python manage.py migrate
+---------------------------------
+
+Paso 7: Ejecutar el proyecto
+
+-Asegúrate de que tu entorno virtual esté activo.
+-Ejecuta el siguiente comando para iniciar el servidor de desarrollo de Django:
+
+---------------------------------
+python manage.py runserver
+---------------------------------
+
+Esto iniciará el servidor y mostrará una URL local donde podrás acceder a la página principal de pybuys.

@@ -42,3 +42,4 @@ class Ventas(models.Model):
     id_producto = models.ForeignKey(Productos, on_delete=models.CASCADE)
     cantidad = models.IntegerField(validators=[MinValueValidator(0)])
     creado = models.DateTimeField(auto_now_add=True)
+

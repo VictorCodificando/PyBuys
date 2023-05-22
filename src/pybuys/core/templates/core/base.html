@@ -17,47 +17,61 @@
     {% endblock %}
   </head>
   <body>
-    
+
     <div class="min-h-screen flex flex-col items-center bg-gray-100">
-      <nav class="flex items-center justify-between shadow-md p-4 w-full bg-white">
-        <a href="{%if request.user.is_authenticated%}{%url 'index'%}{%else%}{%url 'home' %} {%endif%}"><img src="/media/core/favicon.ico" alt="Logo izquierdo" class="w-12 h-12" /></a>
+      <nav
+        class="flex items-center justify-between shadow-md p-4 w-full bg-white">
+        <a
+          href="{%if request.user.is_authenticated%}{%url 'index'%}{%else%}{%url 'home' %} {%endif%}"><img
+            src="/media/core/favicon.ico" alt="Logo izquierdo" class="w-12 h-12" /></a>
         {% if request.user.is_authenticated %}
         <div class="grow mx-20 ">
-        <div class="flex flex-col border border-black">
-        <form class="flex flex-row border border-black" method="GET" action="{%url 'productos'%}">
-          <input  autocomplete="off" id="barraBusqueda" name="query" class="w-full py-4 px-6 z-5" type="text" value="{{query}}" placeholder="Busca aquí productos, por su nombre, descripcion..." maxlength="200">
-          <button class="bg-gray-300 hover:bg-gray-400 text-white font-bold py-2 px-4" id="botonBusqueda">🔍︎</button>
-        </form>
-        <ul id="resultados" class="my-16 absolute"></ul>
-        </div>
-      </div>
-        
-          <div>
-            <img src="/media/core/user_logo.png" alt="Logo derecho" class="w-12 h-12 mr-10" id="user-menu-btn" />
-            <div id="user-menu" style="display: none;" class="z-5 absolute bg-white right-2">
-              <ul class="table-auto border divide-y divide-gray-200">
-                {% if request.user.is_superuser %}
-                  <li class="text-center">
-                    <a href="{%url 'admin:index'%}" class="block p-4 hover:bg-gray-100">Panel de administración</a>
-                  </li>
-                {% endif %}
-                {% if request.user.is_staff %}
-                  <li class="text-center">
-                    <a href="{%url 'buys'%}" class="block p-4 hover:bg-gray-100">Compras</a>
-                  </li>
-                {% endif %}
-                <li class="text-center">
-                  <a href="{%url 'shopping_cart'%}" class="block p-4 hover:bg-gray-100">Carrito</a>
-                </li>
-                <li class="text-center">
-                  <a href="{%url 'configuration'%}" class="block p-4 hover:bg-gray-100">Configuración de cuenta</a>
-                </li>
-                <li class="text-center">
-                  <a href="{%url 'logout'%}" class="block p-4 hover:bg-gray-100">Cerrar sesión</a>
-                </li>
-              </ul>
-            </div>
+          <div class="flex flex-col border border-black">
+            <form class="flex flex-row border border-black" method="GET"
+              action="{%url 'productos'%}">
+              <input autocomplete="off" id="barraBusqueda" name="query"
+                class="w-full py-4 px-6 z-5" type="text" value="{{query}}"
+                placeholder="Busca aquí productos, por su nombre, descripcion..."
+                maxlength="200">
+              <button
+                class="bg-gray-300 hover:bg-gray-400 text-white font-bold py-2 px-4"
+                id="botonBusqueda">🔍︎</button>
+            </form>
+            <ul id="resultados" class="my-16 absolute"></ul>
           </div>
+        </div>
+
+        <div>
+          <img src="/media/core/user_logo.png" alt="Logo derecho"
+            class="w-12 h-12 mr-10" id="user-menu-btn" />
+          <div id="user-menu" style="display: none;"
+            class="z-5 absolute bg-white right-2">
+            <ul class="table-auto border divide-y divide-gray-200">
+              {% if request.user.is_staff %}
+              <li class="text-center">
+                <a href="{%url 'admin:index'%}"
+                  class="block p-4 hover:bg-gray-100">Panel de administración</a>
+              </li>
+
+              <li class="text-center">
+                <a href="{%url 'buys'%}" class="block p-4 hover:bg-gray-100">Compras</a>
+              </li>
+              {% endif %}
+              <li class="text-center">
+                <a href="{%url 'shopping_cart'%}"
+                  class="block p-4 hover:bg-gray-100">Carrito</a>
+              </li>
+              <li class="text-center">
+                <a href="{%url 'configuration'%}"
+                  class="block p-4 hover:bg-gray-100">Configuración de cuenta</a>
+              </li>
+              <li class="text-center">
+                <a href="{%url 'logout'%}" class="block p-4 hover:bg-gray-100">Cerrar
+                  sesión</a>
+              </li>
+            </ul>
+          </div>
+        </div>
         {% endif %}
       </nav>
       <div class="container grow min-w-screen items-center">
@@ -65,9 +79,13 @@
 
         {% endblock %}
       </div>
-      <footer class="bg-gray-600 p-6 px-80 bottom-10 w-full flex flex-row justify-between items-center">
-        <a class="text-lg text-white hover:text-gray-300" href="https://github.com/VictorCodificando/PyBuys">Sobre el proyecto</a>
-        <a class="text-lg text-white hover:text-gray-300" href="https://github.com/VictorCodificando/PyBuys/blob/main/LICENSE">Licencia de uso</a>
+      <footer
+        class="bg-gray-600 p-6 px-80 bottom-10 w-full flex flex-row justify-between items-center">
+        <a class="text-lg text-white hover:text-gray-300"
+          href="https://github.com/VictorCodificando/PyBuys">Sobre el proyecto</a>
+        <a class="text-lg text-white hover:text-gray-300"
+          href="https://github.com/VictorCodificando/PyBuys/blob/main/LICENSE">Licencia
+          de uso</a>
       </footer>
     </div>
   </body>
