@@ -38,7 +38,6 @@ class Contador {
 class ListaHovered {
   constructor(id_elemento, destacado, normal, especificacion = "*") {
 
-    // destacado y normal son arrays de clases
     // destacado se agrega al elemento cuando el mouse entra
     // normal se agrega al elemento cuando el mouse sale
     // id_elemento es el id del elemento que contiene los elementos a los que se les agregará el hover
