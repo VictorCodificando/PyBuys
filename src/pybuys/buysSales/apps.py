@@ -6,7 +6,11 @@ class BuyssalesConfig(AppConfig):
     name = "buysSales"
 
     def ready(self):
-        self.create_staff_group()
+        try:
+            self.create_staff_group()
+        except Exception as e:
+            print(e)
+            pass
 
     @staticmethod
     def create_staff_group():

@@ -1,6 +1,6 @@
 Paso 1: Preparación
 
-Asegúrate de tener Python 3.x instalado en tu sistema.
+Asegúrate de tener Python 3.11.2 instalado en tu sistema.
 Puedes verificarlo ejecutando el comando python --version en tu terminal. 
 Si no tienes Python instalado, descárgalo e instálalo desde el sitio web oficial de Python (https://www.python.org/).
 Tener instalado MysqlWorkbench u otro programa que nos permita crear un sqlserver MSSQL en nuestro ordenador.
