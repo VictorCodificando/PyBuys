@@ -62,13 +62,25 @@ Paso 5: Configurar la base de datos
 CREATE DATABASE pybuys
 ---------------------------------
 
-Paso 6: Migrar la base de datos
+Paso 6: Migrar la base de datos (SIEMPRE QUE SE HAGA CAMBIO A LOS MODELOS DE BDD)
 
 -Asegúrate de que tu entorno virtual esté activo.
+-Ejecuta el siguiente comando para crear las migraciones:
+---------------------------------
+python manage.py makemigrations
+---------------------------------
+
 -Ejecuta el siguiente comando para aplicar las migraciones y crear las tablas de la base de datos:
 
 ---------------------------------
 python manage.py migrate
+---------------------------------
+Paso 7: Recolectar archivos estáticos: (POR CADA MODIFICACION A LOS ARCHIVOS DENTRO DE STATIC)
+
+-Para ejecutar estos arhivos debemos ejecutar este comando:
+
+---------------------------------
+python manage.py collectstatic
 ---------------------------------
 
 Paso 7: Ejecutar el proyecto
