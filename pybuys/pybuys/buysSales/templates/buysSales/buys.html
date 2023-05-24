@@ -1,0 +1,132 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+  <div class="w-full my-6 p-6 mx-auto bg-white rounded-xl shadow-md overflow-auto">
+    {% if request.user.is_superuser %}
+      <h1 class="text-3xl font-bold mb-4 text-center">Todas las compras</h1>
+      <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Filtrar por usuario.." />
+    {% else %}
+      <h1 class="text-3xl font-bold mb-4 text-center">Mis compras</h1>
+    {% endif %}
+    {% if compras %}
+      <table id="myTable" class="w-full table-fixed border-collapse text-lg bg-gradient-to-r from-blue-300 to-purple-300">
+        <thead>
+          <tr class="text-white bg-gradient-to-r from-blue-500 to-purple-500">
+            {% if request.user.is_superuser %}
+              <th class="border w-1/4 p-2 cursor-pointer" onclick="sortTable(0)">Usuario</th>
+            {% endif %}
+            <th class="border w-1/4 p-2 cursor-pointer" onclick="sortTable(1)">Producto</th>
+            <th class="border w-1/4 p-2 cursor-pointer" onclick="sortTable(2)">Cantidad</th>
+            <th class="border w-1/4 p-2 cursor-pointer" onclick="sortTable(3)">Fecha de compra</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for compra in compras %}
+            <tr class="hover:bg-gradient-to-r from-blue-200 to-purple-200">
+              {% if request.user.is_superuser %}
+                <td class="border p-2">{{ compra.id_usuario.username }}</td>
+              {% endif %}
+              <td class="border p-2">{{ compra.id_producto.nombre }}</td>
+              <td class="border p-2">{{ compra.cantidad }}</td>
+              <td class="border p-2">{{ compra.creado|date:'Y-m-d H:i:s' }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td class="border p-2" colspan="4">No hay compras para mostrar.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <h1 class="text-3xl font-bold mb-4 text-center">No hay compras para mostrar.</h1>
+    {% endif %}
+  </div>
+
+  <script>
+    function myFunction() {
+      var input, filter, table, tr, td, i, txtValue
+      input = document.getElementById('myInput')
+      filter = input.value.toUpperCase()
+      table = document.getElementById('myTable')
+      tr = table.getElementsByTagName('tr')
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName('td')[0]
+        if (td) {
+          txtValue = td.textContent || td.innerText
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = ''
+          } else {
+            tr[i].style.display = 'none'
+          }
+        }
+      }
+    }
+    
+    function sortTable(n) {
+      var table,
+        rows,
+        switching,
+        i,
+        x,
+        y,
+        shouldSwitch,
+        dir,
+        switchcount = 0
+      table = document.getElementById('myTable')
+      switching = true
+      dir = 'asc'
+    
+      while (switching) {
+        switching = false
+        rows = table.rows
+        for (i = 1; i < rows.length - 1; i++) {
+          shouldSwitch = false
+          x = rows[i].getElementsByTagName('TD')[n]
+          y = rows[i + 1].getElementsByTagName('TD')[n]
+    
+          // Intenta parsear las celdas como fechas
+          var xDate = Date.parse(x.innerHTML.trim())
+          var yDate = Date.parse(y.innerHTML.trim())
+    
+          if (!isNaN(xDate) && !isNaN(yDate)) {
+            // Si ambas celdas se pueden parsear como fechas, usa la comparación de fechas
+            if (dir == 'asc') {
+              if (xDate > yDate) {
+                shouldSwitch = true
+                break
+              }
+            } else if (dir == 'desc') {
+              if (xDate < yDate) {
+                shouldSwitch = true
+                break
+              }
+            }
+          } else {
+            // Si no son fechas, usa la comparación de texto normal
+            if (dir == 'asc') {
+              if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                shouldSwitch = true
+                break
+              }
+            } else if (dir == 'desc') {
+              if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                shouldSwitch = true
+                break
+              }
+            }
+          }
+        }
+        if (shouldSwitch) {
+          rows[i].parentNode.insertBefore(rows[i + 1], rows[i])
+          switching = true
+          switchcount++
+        } else {
+          if (switchcount == 0 && dir == 'asc') {
+            dir = 'desc'
+            switching = true
+          }
+        }
+      }
+    }
+  </script>
+{% endblock %}

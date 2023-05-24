@@ -1,0 +1,12 @@
+{% load custom_tags %}
+<div class="grid grid-cols-4 grid-flow-row mt-20 w-full">
+  {% for producto in productos %}
+    <a class="border text-center flex flex-col items-center py-8" href="{% url 'detail' producto.pk %}">
+      <img src="{{ producto.image.url }}" class="grow object-contain h-48" />
+    <div class="flex flex-col justify-between w-full px-[5%] mt-4">
+        <strong><p>{{ producto.nombre }}</p></strong>
+        <strong><p class="text-orange-600">{{ producto.get_precio_real}}</p></strong>
+      </div>
+    </a>
+  {% endfor %}
+</div>

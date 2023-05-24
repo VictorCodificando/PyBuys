@@ -1,0 +1,29 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+  <div class="w-1/3 h-100 my-6 p-6 mx-auto bg-gray-10 rounded-xl shadow-xl bg-white">
+    <h2 class="mb-6 text-3xl font-bold">Configuración de usuario</h2>
+    <form method="POST" action=".">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="inline-block mb-2 mt-5 mx-2">Nuevo usuario</label><br />
+        {{ form.username }}
+        <p class="text-gray-500 ml-5 text-sm">Para no cambiarlo pon el que tienes actualmente</p>
+      </div>
+      <div class="mb-3">
+        <label class="inline-block mb-2 mt-5 mx-2">Nueva direccion email</label><br />
+        {{ form.email }}
+        <p class="text-gray-500 ml-5 text-sm">Para no cambiarla pon la que tienes actualmente</p>
+      </div>
+      {% if form.errors or form.non_field_errors %}
+        <div class="mb-3 bg-red-100 rounded-xl">
+          {% for field in form %}
+            {{ field.errors }}
+          {% endfor %}
+          {{ form.non_field_errors }}
+        </div>
+      {% endif %}
+      <button type="submit" class="bg-gradient-to-r from-blue-500 to-purple-400 hover:from-blue-600 hover:to-purple-500 text-white font-bold py-2 px-4 rounded mr-20 w-full mt-10">Confirmar</button>
+    </form>
+  </div>
+{% endblock %}
